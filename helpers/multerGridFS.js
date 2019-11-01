@@ -1,4 +1,4 @@
-import config from 'config/config'
+import config from '../constants/constant.controllers.js'
 import crypto from 'crypto'
 import database from './database.js'
 import GridFsStorage from 'multer-gridfs-storage'

@@ -1,13 +1,12 @@
-import firebase from "./config/config";
-import initializeApp from "firebase";
+import initializeApp from "./helpers/firebase.js"
 import express from "express";
 import expressValidator from "express-validator";
 import json from "body-parser";
 import userRoutes from "./routes/user.route.js";
 import mediaRoutes from "./routes/media.route.js";
 import cors from "cors";
-import multerGridFS from 'helpers/multerGridFS.js'
-import database from 'helpers/database.js'
+import multerGridFS from './helpers/multerGridFS.js'
+import database from './helpers/database.js'
 
 const PORT = process.env.PORT;
 const API_URL = process.env.API_ROUTE;

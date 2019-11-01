@@ -1,7 +1,7 @@
 
 //import logger from 'config/logger'
 import mongoose from 'mongoose'
-import multer from 'helpers/multer'
+import multer from '../helpers/multerGridFS.js'
 
 
 /**

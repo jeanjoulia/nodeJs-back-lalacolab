@@ -34,7 +34,7 @@ router.post("/signin", (req, res) => {
     signinUser.call(req, res);
 });
 
-router.get("/:userId/signout", auth, signoutUser.call, (req, res) => {
+router.get("/:userId/signout", auth, (req, res) => {
     signoutUser.call(req, res);
 });
 

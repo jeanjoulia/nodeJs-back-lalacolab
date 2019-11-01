@@ -1,11 +1,9 @@
-const config = require("../config/config");
+import config from "../constants/config.json"
+import firebase from "firebase"
+import jwt from 'jsonwebtoken'
+import User from '../models/user.model.js'
 
 let actionCodeSettings = config.actionCodeSettings;
-
-var firebase = require("firebase");
-var jwt = require('jsonwebtoken');
-
-import MongoUser from '../models/user.model.js'
 
 module.exports.signin = function (email, password) {
     return new Promise((resolve, reject) => {
@@ -18,7 +16,7 @@ module.exports.signin = function (email, password) {
                 firebase.auth().signInWithEmailAndPassword(email, password)
                     .then(() => {
                         console.log(email + " is signed in");
-                        MongoUser.findOne({ mail: email }).then(result => {
+                        User.findOne({ mail: email }).then(result => {
                             if (result == null) {
                                 console.log("pas trouvé")
                             }
@@ -189,7 +187,7 @@ module.exports.deleteUser = function () {
 }
 
 module.exports.getUser = function (_id) {
-    MongoUser
+    User
         .findById(_id)
         .exec(function (err, user) {
             return user;
@@ -220,7 +218,7 @@ module.exports.initfire = function () {
         // [START_EXCLUDE silent]
         // [END_EXCLUDE]
         if (user) {
-            MongoUser.findOne({ mail: user.email }).then(result => {
+            User.findOne({ mail: user.email }).then(result => {
 
                 if (result == null) {
                     console.log("pas trouvé")

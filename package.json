@@ -4,7 +4,8 @@
   "description": "manage all information of teh database",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node server.js"
   },
   "repository": {
     "type": "git",
@@ -16,13 +17,31 @@
     "url": "https://github.com/jeanjoulia/nodeJs-back-lalacolab/issues"
   },
   "homepage": "https://github.com/jeanjoulia/nodeJs-back-lalacolab#readme",
-  "dependencies": {},
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express-jwt": "^5.3.1",
+    "express-validator": "^6.2.0",
+    "firebase": "^7.2.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.7",
+    "multer-gridfs-storage": "^4.0.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
     "eslint": "^6.5.1",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^1.19.4"
   }
 }

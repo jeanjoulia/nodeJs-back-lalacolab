@@ -1,4 +1,4 @@
-import config from 'config/config'
+import config from '../constants/constant.controllers.js'
 import mongoose from 'mongoose'
 
 let con = null
