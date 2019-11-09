@@ -1,12 +1,14 @@
 import initializeApp from "./helpers/firebase.js"
-import express from "express";
-import expressValidator from "express-validator";
-import json from "body-parser";
-import userRoutes from "./routes/user.route.js";
-import mediaRoutes from "./routes/media.route.js";
-import cors from "cors";
+import express from "express"
+import expressValidator from "express-validator"
+import json from "body-parser"
+import userRoutes from "./routes/user.route.js"
+import mediaRoutes from "./routes/media.route.js"
+import cors from "cors"
 import multerGridFS from './helpers/multerGridFS.js'
 import database from './helpers/database.js'
+import config from './constants/config.json'
+import firebase from 'firebase'
 
 const PORT = process.env.PORT;
 const API_URL = process.env.API_ROUTE;
@@ -60,18 +62,17 @@ conn.once('open', () => {
 })
 
 //#################################################
-let firebaseConfig = _firebase;
-initializeApp(firebaseConfig);
+let firebaseConfig = config.firebase;
+firebase.initializeApp(firebaseConfig);
 import {
   initfire
 } from "./helpers/firebase";
 initfire();
 //################################################
 
-app.use(API_URL + "/users", userRoutes);
-app.use(API_URL + "/medias", mediaRoutes);
+app.use("/users", userRoutes);
+app.use("/medias", mediaRoutes);
 
-app.use(API_URL + "/users", users_routes);
 //every other route send error 404
 app.all("*", (req, res) => {
   res.status(404).send();

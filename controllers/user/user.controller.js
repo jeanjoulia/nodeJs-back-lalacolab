@@ -1,20 +1,54 @@
 import mediaService from '../../services/media.service.js'
+import userService from '../../services/user.service.js'
+import HTTP_STATUS from '../../constants/httpStatus.js'
 
 export default class userController {
 
-    creat(req, res) {
+    /**
+    * @description add a profile picture
+    * @listens /create
+    * @method create
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return the id of the user
+    */
+    static async create(req, res) {
 
     }
 
-    delete(req, res) {
+    /**
+    * @description delete the user
+    * @listens /delete/:id
+    * @method delete
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return deleted user 
+    */
+    static async delete(req, res) {
 
     }
 
-    get(req, res) {
+    /**
+    * @description get the user using his id
+    * @listens /get/:id
+    * @method get
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return fetched user 
+    */
+    static async get(req, res) {
 
     }
 
-    patch(req, res) {
+    /**
+    * @description edit a user 
+    * @listens /edit/:id
+    * @method patch
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return user before being modfied 
+    */
+    static async patch(req, res) {
 
     }
 
@@ -64,19 +98,51 @@ export default class userController {
         return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
     }
 
-    query(req, res) {
+    /**
+    * @description fetch users that match 
+    * @listens /query
+    * @method query
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return list of user that match the given atribute 
+    */
+    static async query(req, res) {
 
     }
 
-    signIn(req, res) {
+    /**
+    * @description sign in the user 
+    * @listens /signIn
+    * @method signIn
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return .........
+    */
+    static async signIn(req, res) {
 
     }
 
-    signOut(req, res) {
+    /**
+    * @description sign out the user
+    * @listens /signOut/:id
+    * @method signOut
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return .......
+    */
+    static async signOut(req, res) {
 
     }
 
-    validate(req, res) {
+    /**
+    * @description validate the user once created
+    * @listens /validate/:id
+    * @method validate
+    * @param {req} req request
+    * @param {res} res response
+    * @returns {Object} return ......... 
+    */
+    static async validate(req, res) {
 
     }
 

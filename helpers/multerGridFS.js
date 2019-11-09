@@ -36,7 +36,7 @@ export default class Multer {
                         const filename = buf.toString('hex') + path.extname(file.originalname)
                         const fileInfo = {
                             filename,
-                            bucketName: config.get('BUCKET_NAME'),
+                            bucketName: 'file',
                         }
 
                         resolve(fileInfo)
@@ -46,7 +46,7 @@ export default class Multer {
         })
 
         // eslint-disable-next-line new-cap
-        gridFSBucket = new mongoose.mongo.GridFSBucket(database.getConnection().db, { bucketName: config.get('BUCKET_NAME') })
+        gridFSBucket = new mongoose.mongo.GridFSBucket(database.getConnection().db, { bucketName: 'file' })
 
         // tell multer to use the storage object to save the incomming file
         upload = multer({ storage })

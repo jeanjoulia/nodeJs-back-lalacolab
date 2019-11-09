@@ -17,7 +17,8 @@ export default class database {
      * @returns {Number} Connection object
      */
     static connectToServer() {
-        mongoose.connect(config.get('DATABASE_URI'), {
+        console.debug(process.env.URLMongoDB)
+        mongoose.connect(process.env.URLMongoDB, {
             useNewUrlParser: true,
         })
         mongoose.set('useCreateIndex', true)

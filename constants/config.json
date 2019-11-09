@@ -1,6 +1,7 @@
 {
     "common": {
-        "API_ROUTE": "/siima"
+        "API_ROUTE": "/lalacolab",
+        "URLMongoDB": "mongodb://localhost/siima_db"
     },
     "production": {
         "PORT": 32145
