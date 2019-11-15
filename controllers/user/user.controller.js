@@ -25,6 +25,35 @@ export default class userController {
     * @returns {Object} return deleted user 
     */
     static async delete(req, res) {
+        const { id } = req.params
+        const userTargeted = await userService.getById(id)
+        const userConnected = req.user
+
+        // check if the user targeted for the profile picture exist
+        if (userTargeted == null) {
+            return res.status(HTTP_STATUS.NO_CONTENT).json({ error: 'User doesnt exist' })
+        }
+
+        // check if the user connected have the correct right to add the profile picture
+        if (userConnected.role.label === 'Admin' || userTargeted.id === userConnected.id) {
+            try {
+
+                // updates the user information with the requested modifications
+                console.log("User to be removed:" + userTargeted + "\n")
+                await userService.delete(userTargeted.id)
+
+                let userRemoved = await userService.getById(id)
+                onsole.log("User spot (null if removed correctly):" + userRemoved + "\n")
+
+                return res.status(HTTP_STATUS.OK).json({ status: 'user corectly deleted' })
+            }
+            catch (error) {
+                logger.error(error)
+                return res.status(HTTP_STATUS.INTERNAL).json({ error: 'something went wrong while updating the user' })
+            }
+        }
+
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
 
     }
 
