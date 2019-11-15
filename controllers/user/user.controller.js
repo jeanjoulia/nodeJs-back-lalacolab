@@ -37,6 +37,23 @@ export default class userController {
     * @returns {Object} return fetched user 
     */
     static async get(req, res) {
+        const { id } = req.params
+        const userTargeted = await userService.getById(id)
+        const userConnected = req.user
+
+        // check if the user targeted for the profile picture exist
+        if (userTargeted == null) {
+            return res.status(HTTP_STATUS.NO_CONTENT).json({ error: 'User doesnt exist' })
+        }
+
+        // check if the user connected have the correct right to add the profile picture
+        if (userConnected.role.label === 'Admin' || userTargeted.id === userConnected.id) {
+
+            // return found user
+            return res.status(HTTP_STATUS.OK).json({ status: 'user retrieved', user: userTargeted })
+        }
+
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
 
     }
 
