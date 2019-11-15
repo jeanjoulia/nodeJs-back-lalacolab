@@ -1,11 +1,13 @@
 import mediaService from '../../services/media.service.js'
 import userService from '../../services/user.service.js'
 import HTTP_STATUS from '../../constants/httpStatus.js'
+import paramChecker from '../../helpers/paramChecker.js'
+import firebase from "firebase"
 
 export default class userController {
 
     /**
-    * @description add a profile picture
+    * @description create a new User
     * @listens /create
     * @method create
     * @param {req} req request
@@ -13,7 +15,67 @@ export default class userController {
     * @returns {Object} return the id of the user
     */
     static async create(req, res) {
+        const { id } = req.params
+        const userConnected = req.user
+        const { username, mail, password } = req.body
 
+        console.debug("--- ENTERING CREATE-USER ---")
+        console.debug("CREATE USER 0: Request info: " + JSON.stringify(req.body))
+
+        // check if a user is already connected
+        if (userConnected != null){
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'User already connected' })
+        }
+        console.debug("CREATE USER 1: Connection check")
+        
+        // check parameters
+        if (!paramChecker.checkString(username) || !paramChecker.checkMail(mail) || !paramChecker.checkPassword(password)){
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: '"username", "mail" or "password" in request is not acceptable' })
+        }
+        console.debug("CREATE USER 2: Parameter check")
+
+        // check if the mail is already taken
+        let targetedUser = await userService.getByMail(mail)
+        if (targetedUser == null || targetedUser.length > 0) {
+            console.debug("CREATE USER - Error Database: Mail address already used")
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Mail address already in use' })
+        }
+
+        // create user in firebase
+        try{
+            let firebaseStatus = await firebase.auth().createUserWithEmailAndPassword(mail, password)
+            // TODO: Verify this firebase check with Julien
+            if (firebaseStatus.user == undefined){
+                console.debug("CREATE USER - Error Firebase: " + JSON.stringify(firebaseStatus))
+                return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: firebaseStatus.message})
+            }
+        } catch (error) {
+            console.debug("CREATE USER - Error Firebase: " + error)
+            return res.status(HTTP_STATUS.INTERNAL).json({ error: 'Error while creating user in firebase' })
+        }
+        console.debug("CREATE USER 3: Firebase creation check")
+
+        // create user in database
+        let userId = await userService.create(mail, username)
+        console.debug("CREATE USER 4: Database creation check")
+
+        let userCreated = await userService.getById(userId)
+        console.debug("CREATE USER 5: Firebase retrieve check")
+
+        if (userCreated == null) {
+            // delete firebase user if not created in database
+            try{
+                await firebase.auth().currentUser.delete()
+            }
+            catch (error){
+                console.debug("INTERNAL ERROR: can't delete firebase user")
+                return res.status(HTTP_STATUS.INTERNAL).json({ error: 'Error while deleting user in firebase' })
+            }
+            console.debug("CREATE USER 5bis: Firebase not retrieved check")
+            return res.status(HTTP_STATUS.INTERNAL).json({ error: 'Error while creating user in database' })
+        }
+
+        return res.status(HTTP_STATUS.OK).json( {status: 'User created', user: userCreated})
     }
 
     /**

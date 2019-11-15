@@ -73,11 +73,11 @@ export default class UserService {
     }
 
     /**
- * @method getById
- * @description return user by id
- * @param {String} userId id of the user to return
- * @returns {Object} return user if found or null if fail
- */
+     * @method getById
+     * @description return user by id
+     * @param {String} userId id of the user to return
+     * @returns {Object} return user if found or null if fail
+     */
     static async getById(userId) {
         if (userId === undefined || userId === null) {
             return null
@@ -98,6 +98,33 @@ export default class UserService {
             return null
         }
     }
+
+    /**
+     * @method getByMail
+     * @description return user by its mail address (unique)
+     * @param {String} userId id of the user to return
+     * @returns {Object} return user if found or null if fail
+     */
+    static async getByMail(userMail) {
+        if (userMail === undefined || userMail === null) {
+            return null
+        }
+
+        try {
+            let userFound = await User.find({mail: userMail})
+
+            if (userFound) {
+                return userFound
+            }
+            return null
+        }
+        catch (error) {
+            console.log('error while looking of a user in the database the in service')
+            console.log(error)
+            return null
+        }
+    }
+
 
     /**
  * @method query
