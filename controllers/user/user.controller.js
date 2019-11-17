@@ -52,15 +52,11 @@ export default class userController {
         const body = req.body
         const id = req.params.id
 
-        console.debug(body.length)
-        console.debug(id)
-
         if (Object.entries(body).length === 0 || body === undefined || id === undefined) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'missing information in the request information' })
         }
 
         const userTargeted = await userService.update(id, body)
-        console.debug(userTargeted)
 
         if (userTargeted === null) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'user dont exist' })
