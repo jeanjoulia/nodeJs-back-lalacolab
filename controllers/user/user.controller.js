@@ -62,7 +62,6 @@ export default class userController {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'user dont exist' })
         }
 
-
         return res.status(HTTP_STATUS.OK).json({ oldUser: userTargeted })
     }
 
