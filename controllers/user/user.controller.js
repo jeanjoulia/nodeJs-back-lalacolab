@@ -49,7 +49,20 @@ export default class userController {
     * @returns {Object} return user before being modfied 
     */
     static async patch(req, res) {
+        const body = req.body
+        const id = req.params.id
 
+        if (Object.entries(body).length === 0 || body === undefined || id === undefined) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'missing information in the request information' })
+        }
+
+        const userTargeted = await userService.update(id, body)
+
+        if (userTargeted === null) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'user dont exist' })
+        }
+
+        return res.status(HTTP_STATUS.OK).json({ oldUser: userTargeted })
     }
 
     /**
