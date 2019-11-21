@@ -15,7 +15,6 @@ export default class userController {
     * @returns {Object} return the id of the user
     */
     static async create(req, res) {
-        const { id } = req.params
         const userConnected = req.user
         const { username, mail, password } = req.body
 
@@ -129,22 +128,30 @@ export default class userController {
     */
     static async get(req, res) {
         const { id } = req.params
-        const userTargeted = await userService.getById(id)
+        // TODO: Work In Progress
         const userConnected = req.user
 
+        console.debug("--- ENTERING GET-USER ---")
+        console.debug("GET USER 0: Request info: " + JSON.stringify(req.user))
+
         // check if the user targeted for the profile picture exist
+        let userTargeted = await userService.getById(id)
         if (userTargeted == null) {
+            console.debug("GET USER - Error Database: User does not Exist")
             return res.status(HTTP_STATUS.NO_CONTENT).json({ error: 'User doesnt exist' })
         }
+        console.debug("GET USER 1: User existence check")
 
-        // check if the user connected have the correct right to add the profile picture
-        if (userConnected.role.label === 'Admin' || userTargeted.id === userConnected.id) {
-
-            // return found user
-            return res.status(HTTP_STATUS.OK).json({ status: 'user retrieved', user: userTargeted })
+        // check if the user connected have the correct right to get user info
+        if (!(userConnected.role.label === 'Admin' || userTargeted.id === userConnected.id)) {
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
+            
         }
+        console.debug("GET USER 2: User rights check")
 
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
+        // return found user
+        return res.status(HTTP_STATUS.OK).json({ status: 'user retrieved', user: userTargeted })
+        
 
     }
 

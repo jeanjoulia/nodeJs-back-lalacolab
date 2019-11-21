@@ -9,9 +9,14 @@ var auth = jwt({
 
 const router = express.Router();
 
-//creat user
+//create user
 router.post("/", (req, res) => {
     userController.create(req, res);
+});
+
+//get user
+router.get("/:id", (req, res) => {
+    userController.get(req, res);
 });
 
 //delete user
@@ -25,7 +30,7 @@ router.patch("/:id", (req, res) => {
 });
 
 //query user 
-router.get("/:id", (req, res) => {
+router.get("/", (req, res) => {
     userController.query(req, res);
 });
 
