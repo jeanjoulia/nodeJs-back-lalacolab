@@ -51,7 +51,7 @@ export default class UserService {
      * @returns {Object} returned old user if found or null if fail
      */
     static async update(userId, userInfo) {
-        if (userId === undefined || userId === null || userInfo === undefined || userInfo === null) {
+        if (userId === undefined || userId === null || userInfo === undefined || userInfo === {} || userInfo === null) {
             return null
         }
 
@@ -59,7 +59,6 @@ export default class UserService {
             let oldUser = await User.findOneAndUpdate({ _id: userId }, userInfo)
 
             if (oldUser) {
-                console.log('user do not exist')
                 return oldUser
             }
 
@@ -87,7 +86,7 @@ export default class UserService {
             let userFound = await User.findById(userId)
 
             if (userFound) {
-                console.log('user do not exist')
+                console.log('user exist')
                 return userFound
             }
             return null

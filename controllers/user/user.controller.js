@@ -22,13 +22,13 @@ export default class userController {
         console.debug("CREATE USER 0: Request info: " + JSON.stringify(req.body))
 
         // check if a user is already connected
-        if (userConnected != null){
+        if (userConnected != null) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'User already connected' })
         }
         console.debug("CREATE USER 1: Connection check")
-        
+
         // check parameters
-        if (!paramChecker.checkString(username) || !paramChecker.checkMail(mail) || !paramChecker.checkPassword(password)){
+        if (!paramChecker.checkString(username) || !paramChecker.checkMail(mail) || !paramChecker.checkPassword(password)) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: '"username", "mail" or "password" in request is not acceptable' })
         }
         console.debug("CREATE USER 2: Parameter check")
@@ -41,12 +41,12 @@ export default class userController {
         }
 
         // create user in firebase
-        try{
+        try {
             let firebaseStatus = await firebase.auth().createUserWithEmailAndPassword(mail, password)
             // TODO: Verify this firebase check with Julien
-            if (firebaseStatus.user == undefined){
+            if (firebaseStatus.user == undefined) {
                 console.debug("CREATE USER - Error Firebase: " + JSON.stringify(firebaseStatus))
-                return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: firebaseStatus.message})
+                return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: firebaseStatus.message })
             }
         } catch (error) {
             console.debug("CREATE USER - Error Firebase: " + error)
@@ -63,10 +63,10 @@ export default class userController {
 
         if (userCreated == null) {
             // delete firebase user if not created in database
-            try{
+            try {
                 await firebase.auth().currentUser.delete()
             }
-            catch (error){
+            catch (error) {
                 console.debug("INTERNAL ERROR: can't delete firebase user")
                 return res.status(HTTP_STATUS.INTERNAL).json({ error: 'Error while deleting user in firebase' })
             }
@@ -74,7 +74,7 @@ export default class userController {
             return res.status(HTTP_STATUS.INTERNAL).json({ error: 'Error while creating user in database' })
         }
 
-        return res.status(HTTP_STATUS.OK).json( {status: 'User created', user: userCreated})
+        return res.status(HTTP_STATUS.OK).json({ status: 'User created', user: userCreated })
     }
 
     /**
@@ -145,13 +145,13 @@ export default class userController {
         // check if the user connected have the correct right to get user info
         if (!(userConnected.role.label === 'Admin' || userTargeted.id === userConnected.id)) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
-            
+
         }
         console.debug("GET USER 2: User rights check")
 
         // return found user
         return res.status(HTTP_STATUS.OK).json({ status: 'user retrieved', user: userTargeted })
-        
+
 
     }
 
@@ -164,41 +164,20 @@ export default class userController {
     * @returns {Object} return user before being modfied 
     */
     static async patch(req, res) {
-        const { id } = req.params
-        const userTargeted = await userService.getById(id)
-        const userConnected = req.user
+        const body = req.body
+        const id = req.params.id
 
-        // check if the user targeted for the profile picture exist
-        if (userTargeted == null) {
-            return res.status(HTTP_STATUS.NO_CONTENT).json({ error: 'User doesnt exist' })
+        if (Object.entries(body).length === 0 || body === undefined || id === undefined) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'missing information in the request information' })
         }
 
-        // check if the user connected have the correct right to add the profile picture
-        if (userConnected.role.label === 'Admin' || userTargeted.id === userConnected.id) {
-            try {
+        const userTargeted = await userService.update(id, body)
 
-                // check the modifiable info
-                let { modifications } = req.body.modifications
-                
-                console.log("Modifications requested:" + req.body.modifications + "\n")
-                console.log("Modifications retrieved:" + modifications + "\n")
-
-                // updates the user information with the requested modifications
-                console.log("User before requested modifications:" + userTargeted + "\n")
-                await userService.update(userTargeted.id, modifications)
-
-                let userUpdated = await userService.getById(id)
-                onsole.log("User after requested modifications:" + userUpdated + "\n")
-
-                return res.status(HTTP_STATUS.OK).json({ status: 'user corectly updated' })
-            }
-            catch (error) {
-                logger.error(error)
-                return res.status(HTTP_STATUS.INTERNAL).json({ error: 'something went wrong while updating the user' })
-            }
+        if (userTargeted === null) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'user dont exist' })
         }
 
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'you dont have the correct right' })
+        return res.status(HTTP_STATUS.OK).json({ oldUser: userTargeted })
     }
 
     /**
